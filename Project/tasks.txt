@@ -1,0 +1,18 @@
+To do: 
+Create.c
+	Program to create files and directories
+
+	create -f filepath c
+	create -d dirpath
+	create -h oldname linkname
+	create -s oldname linkname
+
+Fileconverter.c
+	Generation of text files from the binary file provided
+
+	Takes in binary file
+	Puts out into text file
+	Take a group of characters and seperates them
+	converts that into characters
+	reads into the file is done
+	stores that into a text file
