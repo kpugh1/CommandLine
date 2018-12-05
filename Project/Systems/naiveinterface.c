@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include "interfaceFunctions.c"
 
 #define MAX_CHOICE 50
 #define MAX_ARGS 4
@@ -10,27 +11,23 @@
 
 pid_t pid;
 int status;
+int directCount, fileCount;
 char *args[MAX_ARGS][MAX_ARG_SIZE];
+char outdirectory[50][200];
+char currFiles[50][200];
 
 int main(int argc, char *argv[])
 {
     //variables
     char *choice = malloc(MAX_CHOICE);
     char *token;
-    int i = 0;
+    int i = 0, argCount = 0;
+    directCount = 0;
+    fileCount = 0;
     
     memset(args, 0, sizeof(args));
-    
-    //prompt user for their input
-    printf("Please enter a selection: ");
-    fgets(choice, MAX_CHOICE, stdin);
-    for(int i = 0; i<strlen(choice); i++)
-    {
-        if(choice[i] == '\n')
-        choice[i] = '\0';
-    }
-    
-    i=0;
+
+    getInput(choice, MAX_CHOICE);
     
     //loop until user quits out of shell
     while(1)
@@ -44,37 +41,72 @@ int main(int argc, char *argv[])
             strcpy(args[i], token);
             token = strtok(NULL, " ");
             i++;
+            argCount++;
         }
 
         i = 0;
         
         //Perform commands based on user input
-        if(strcmp(args[0], "fileconverter") == 0)
+        //FILE CONVERTER COMMAND
+        if(strcmp(args[0], "fileconverter") == 0 && argCount == 3)
         {
+            sprintf(outdirectory[directCount], "./%s/", args[2]);
             fileconverter();
-            wait(&status);
-        }else if(strcmp(args[0], "create") == 0)
+            directCount++;
+            
+        //CREATE COMMAND
+        }else if(strcmp(args[0], "create") == 0 && argCount > 2 && argCount < 5)
         {
-            create();
-            wait(&status);
+            if(strcmp(args[1], "-d") == 0 && args[2][0] != '\0')
+            {
+                sprintf(outdirectory[directCount], "./%s/", args[2]);
+                create();
+                directCount++;
+            }else if(strcmp(args[1], "-f") == 0 && args[2][0] != '\0')
+            {
+                //sprintf(currFiles[fileCount], "./%s/", args[2]);
+                strcpy(currFiles[fileCount], args[2]);
+                create();
+                fileCount++;
+            }
+            
+        //INDEXER COMMAND
+        }else if(strcmp(args[0], "indexer") == 0 && (argCount == 2 || argCount == 3))
+        {
+            if(argCount == 2)
+            {
+                sprintf(outdirectory[directCount], "./%s/", args[1]);
+                indexer();
+                directCount++;
+            }else
+            {
+                sprintf(outdirectory[directCount], "./%s/", args[2]);
+                indexer();
+                directCount++;
+            }
+            
+        //QUIT COMMAND
         }else if(strcmp(args[0], "quit") == 0)
         {
-            quit();
+            char c;
+            printf("Are you sure you want to exit? All files will be lost. Y/N\n");
+            scanf("%c", &c);
+            c = toupper(c);
+            if(c == 'N')
+            {
+                printf("Returning to main menu\n");
+            }else if(c == 'Y')
+                quit();
         }else
-            printf("Invalid selection\n");
+            printf("Invalid selection: enter again or check # of arguments\n");
         
         //clear command line
         i = 0;
         memset(args, 0, sizeof(args));
+        argCount = 0;
         
-        //prompt user for their input
-        printf("Please enter a selection: ");
-        fgets(choice, MAX_CHOICE, stdin);
-        for(int i = 0; i<strlen(choice); i++)
-        {
-            if(choice[i] == '\n')
-            choice[i] = '\0';
-        }
+        //Get input from user again
+        getInput(choice, MAX_CHOICE);
     }
 
 
