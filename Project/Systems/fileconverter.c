@@ -23,7 +23,18 @@ int main(int argc, char *argv[])
     //Variables
     char binCharacter[9];
     int binNum, decNum = 0, remainder, i = 0;
+<<<<<<< HEAD
 	
+=======
+
+    /*
+    printf("%s\n", argv[0]);
+    printf("%s\n", argv[1]);
+    printf("%s\n", argv[2]);
+    exit(0);
+    */
+   
+>>>>>>> 98502c455bae7a85324479723a5068c130ae851d
     //Open input file
     infile = fopen(argv[1], "r");
 
@@ -91,7 +102,11 @@ void systemFile(char* file, char* direct)
 
     //Variables
     char firstWord[10]; char line[50];
+<<<<<<< HEAD
     char airlinecode[6]; char airlinefile[10];
+=======
+    char airlinecode[2]; char airlinefile[6];
+>>>>>>> 98502c455bae7a85324479723a5068c130ae851d
     char allLines[250][50];
     int i = 0, size = 0;
     //airlinecode for the letters themselves, airlinefile for the filename.
@@ -112,6 +127,7 @@ void systemFile(char* file, char* direct)
     }else
     {
         waitpid(pid, &status, 0);
+<<<<<<< HEAD
     }
 
     //Populate array of lines
@@ -238,6 +254,135 @@ void systemFile(char* file, char* direct)
     remove(file);
 }
 
+=======
+    }
+
+    //Populate array of lines
+    while(!feof(infile))
+    {
+        fgets(allLines[i], 50, infile);
+        size++;
+        i++;
+    }
+    
+    i = 0;
+    
+    //SORT THROUGH ARRAY HERE
+    printf("Now sorting through array\n");
+    int spaceCount = 0, j = 0, k = 0;
+    char lineDates[250][20];
+    
+    //Populate array of the dates and times of the line
+    while(allLines[i][0] != '\0')
+    {
+        //populate the string inside the array
+        while(allLines[i][j] != '\0')
+        {
+            //Do not put any chars into the string until 3 spaces have been found in the line
+            if(spaceCount >= 3 && allLines[i][j] != '\n')
+            {
+                lineDates[i][k] = allLines[i][j];
+                k++;
+            }
+            
+            //If the character is whitespace, add 1 to spaceCount
+            if(allLines[i][j] == ' ')
+                spaceCount++;
+                
+            j++;
+        }
+        
+        //null terminate
+        lineDates[i][k] = '\0';
+        
+        i++;
+        k = 0;
+        j = 0;
+        spaceCount = 0;
+    }
+    
+    //Bubble sort through array
+    char tempLine[50], tempDate[50];
+    
+    for(i = 0; i < (size - 1); i++)
+    {
+        for(j = 0; j < (size - i - 1); j++)
+        {
+            if(strcmp(lineDates[j], lineDates[j+1]) > 0)
+            {
+                strcpy(tempLine, allLines[j]);
+                strcpy(tempDate, lineDates[j]);
+                
+                //Swap lines in original array
+                strcpy(allLines[j], allLines[j+1]);
+                strcpy(allLines[j+1], tempLine);
+                
+                //Swap lines in dates array
+                strcpy(lineDates[j], lineDates[j+1]);
+                strcpy(lineDates[j+1], tempDate);
+            }
+        }
+    }
+    
+    //Traverse the array and create text files
+    for(i = 0; i < size; i++)
+    {
+        char filepath[200];
+        strcpy(filepath, direct);
+        sscanf(allLines[i], "%s%*[^\n]", firstWord);
+        
+        for (j = 0; j < strlen(firstWord); j++)
+        {
+           
+            if (firstWord[j] >= 65 && firstWord[j] <= 90)//!('0' <= firstWord[i] && '9' >= firstWord[i]))
+            {
+                airlinecode[j] = firstWord[j];
+                airlinefile[j] = firstWord[j];
+            }else
+                airlinefile[j] = '\0';
+        }
+        //airlinefile[2]= '.'; airlinefile[3]= 't'; airlinefile[4]= 'x'; airlinefile[5]= 't'; airlinefile[6] = NULL;
+        strcat(airlinefile, ".txt");
+
+        //Create full filepath for the text file
+        strcat(filepath, airlinefile);
+        
+        //Reset airlinefile to NULL
+        airlinefile[0] = '\0';
+        
+        //Checks if a file already exists, if it does then the line is put into it
+        if((outfile = fopen(filepath, "r")) != NULL)
+        {
+            outfile = fopen(filepath, "a+");
+            fputs(allLines[i], outfile);
+        }else //the file is created
+        {
+            char *fileargs[] = {"./create", "-f", filepath, NULL};
+            if((pid = fork()) == -1)
+                printf("Failed to fork\n");
+            else if(pid == 0)
+            {
+                if(execvp(fileargs[0], fileargs) < 0)
+                    printf("Failed to create file\n");
+            }else
+                waitpid(pid, &status, 0);
+                
+            //Insert line into newly created file
+            outfile = fopen(filepath, "a+");
+            fputs(allLines[i], outfile);
+        }
+
+        fclose(outfile);
+    }
+    
+    //Clean up
+    fflush(stdout);
+    fclose(infile);
+    fclose(readfile);
+    remove(file);
+}
+
+>>>>>>> 98502c455bae7a85324479723a5068c130ae851d
     
     //exit(0);
     /*OLD CODE

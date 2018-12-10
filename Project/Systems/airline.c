@@ -7,7 +7,11 @@
 
 //Structs
 typedef struct freqlist{
+<<<<<<< HEAD
     const char* fileName;
+=======
+    char* fileName;
+>>>>>>> 98502c455bae7a85324479723a5068c130ae851d
     int freqency;
     struct freqlist* next;
 }FrequencyList;
@@ -19,6 +23,7 @@ typedef struct airlinemap {
 }AirlineMap;
 
 //Prototypes
+<<<<<<< HEAD
 void addToMap(AirlineMap**, AirlineMap*);
 void addFreq(FrequencyList*, const char*, int);
 void updateFreq(AirlineMap*, char*, const char*);
@@ -38,6 +43,23 @@ void freeMap(AirlineMap* map){
             fl = fl->next;
         }
         map = map->next;
+=======
+void addToMap(AirlineMap*, char*, FrequencyList*);
+void updateFreq(FrequencyList*, char*, int);
+AirlineMap* findAirline(AirlineMap*, char*);
+AirlineMap* createMap(char*, FrequencyList*);
+FrequencyList* createList(char*, int);
+void freeMap(AirlineMap*);
+ 
+//Definitions
+void freeMap(AirlineMap* map){
+    AirlineMap* trav;
+
+    while(map != NULL){
+        trav = map;
+        map = map->next;
+        
+>>>>>>> 98502c455bae7a85324479723a5068c130ae851d
     }
 }
 
@@ -49,8 +71,12 @@ AirlineMap* createMap(char* code, FrequencyList* nlist){
 
     return newMap;
 }
+<<<<<<< HEAD
 
 FrequencyList* createList(const char* fname,int freq){
+=======
+FrequencyList* createList(char* fname,int freq){
+>>>>>>> 98502c455bae7a85324479723a5068c130ae851d
     FrequencyList* fl = (FrequencyList*)malloc(sizeof(FrequencyList));
     fl->fileName = fname;
     fl->freqency = freq;
@@ -59,7 +85,11 @@ FrequencyList* createList(const char* fname,int freq){
     return fl;
 }
 
+<<<<<<< HEAD
 void addFreq(FrequencyList* list, const char* fName, int freq){
+=======
+void updateFreq(FrequencyList* list, char* fName, int freq){
+>>>>>>> 98502c455bae7a85324479723a5068c130ae851d
     if(list == NULL){
         list = createList(fName, freq);
     }
@@ -75,6 +105,7 @@ void addFreq(FrequencyList* list, const char* fName, int freq){
     }
 }
 
+<<<<<<< HEAD
 void updateFreq(AirlineMap* head, char* airportCode, const char* fName){
    AirlineMap* airMap = findAirline(head, airportCode);
 
@@ -120,6 +151,29 @@ void addToMap(AirlineMap** map, AirlineMap* newAirline){
         curr->next = newAirline;
     }
 
+=======
+void addToMap(AirlineMap* map, char* code, FrequencyList* flist){
+   AirlineMap* trav = map;
+   //AirlineMap* newMap = createMap(code, list);
+    if(map == NULL){
+        printf("map is null");
+        //map = (AirlineMap*)malloc(sizeof(AirlineMap)); 
+        map->airCode = code;
+        map->list = flist;
+    }/*
+    else{
+       AirlineMap* curr;
+       // = (AirlineMap*)malloc(sizeof(AirlineMap)); 
+       while((strcmp(trav->airCode, code) > 0)  && trav != NULL){
+           curr = trav;
+           printf("%s\n",trav->airCode);
+           trav = trav->next;
+       } 
+       curr->next = newMap;
+       newMap->next = trav;
+    }
+    */
+>>>>>>> 98502c455bae7a85324479723a5068c130ae851d
 }
 
 AirlineMap* findAirline(AirlineMap* map, char* code){
@@ -139,6 +193,7 @@ AirlineMap* findAirline(AirlineMap* map, char* code){
 
 }
 
+<<<<<<< HEAD
 /*
 int main(){
     AirlineMap* mapHead = NULL;
@@ -215,4 +270,33 @@ int main(){
     return 0;
  }
 */
+=======
+
+int main(){
+    AirlineMap* mapHead;
+    FrequencyList* flist;
+
+    flist = (FrequencyList*)malloc(sizeof(FrequencyList));
+   // mapHead = (AirlineMap*) malloc(sizeof(AirlineMap));
+    
+   // mapHead->airCode = "JFK";
+   // mapHead->list = NULL;
+
+    addToMap(mapHead, "KEN", flist);
+
+    printf("%s\n", mapHead->airCode);
+    //addToMap(mapHead, "NFW", NULL);
+    //addToMap(mapHead, "HUM",NULL);
+    //addToMap(mapHead, "YOU",NULL);
+
+//printf("%d\n",compCode("AAM","AAA"));
+ //  while(mapHead != NULL){
+   //    printf("%s->", mapHead->airCode);
+     //  mapHead = mapHead->next;
+  // }
+    
+
+    return 0;
+ }
+>>>>>>> 98502c455bae7a85324479723a5068c130ae851d
 

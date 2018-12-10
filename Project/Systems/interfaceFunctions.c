@@ -5,7 +5,6 @@
 #include<signal.h>
 #include<dirent.h>
 #include<string.h>
-#include<ctype.h>
 
 #define MAX_ARGS 4
 #define MAX_ARG_SIZE 20
@@ -13,11 +12,10 @@
 //Globals
 extern pid_t pid;
 extern int status;
-extern int directCount, fileCount, linkCount;
+extern int directCount, fileCount;
 extern char *args[MAX_ARGS][MAX_ARG_SIZE];
 extern char outdirectory[50][200];
 extern char currFiles[50][200];
-extern char currLinks[50][200];
 
 //Prototypes
 void chooseFunction(int);
@@ -103,7 +101,7 @@ void fileconverter()
     printf("Starting file converter command\n");
     
     //Create filepath and arguments for executable
-    char *argv[] = {"./fileconverter",(char*) args[1], outdirectory[directCount], NULL};
+    char *argv[] = {"./fileconverter", args[1], outdirectory[directCount], NULL};
     
     if((pid = fork()) < 0)
     {
@@ -144,9 +142,9 @@ void indexer()
     char *argv[250];
     
     if(args[2][0] == '\0')
-        sprintf((char*)argv, "./indexer %s", outdirectory[directCount]);
+        sprintf(argv, "./indexer %s", outdirectory[directCount]);
     else
-        sprintf((char*)argv, "./indexer %s %s", (char*)args[1], outdirectory[directCount]);
+        sprintf(argv, "./indexer %s %s", args[1], outdirectory[directCount]);
         
     //Creating child process
     if((pid = fork()) < 0)
@@ -163,17 +161,9 @@ void indexer()
 //Quit Program
 //NOT YET COMPLETE
 void quit()
-{   
+{
     printf("Deleting all files\n");
     int i = 0;
-    
-    //remove all links
-    while(currLinks[i][0] != '\0')
-    {
-        unlink(currLinks[i]);
-        i++;
-    }
-    i = 0;
     
     //Remove all intermediate files in the parent directory
     while(currFiles[i][0] != '\0')
@@ -181,6 +171,7 @@ void quit()
         remove(currFiles[i]);
         i++;
     }
+    
     i = 0;
     
     //Traverse through array of directories and delete all of them
