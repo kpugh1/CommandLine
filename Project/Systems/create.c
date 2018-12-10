@@ -1,7 +1,7 @@
 /* Create.c: Has the ability to make a file, directory, hard links, or soft links.
- * 
+ *
  * main: checks what the flag is to hand it to another function.
- *                  
+ *
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +17,7 @@ void createSymoblicLink(char*, char*);
 void createHardLink(char*, char*);
 void createSymoblicLink(char*, char*);
 
-int main(int argc, char* argv[])
+main(int argc, char* argv[])
 {
     //Check for right number of argument
     if(argc < 2)
@@ -25,29 +25,35 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Not enough Arguments\n");
         exit(1);
     }
-    
+
+    /*
+    printf("%s\n", argv[0]);
+    printf("%s\n", argv[1]);
+    printf("%s\n", argv[2]);
+    */
+
     switch(argv[1][1])
     {
         case 'f':
         printf("Opening File %s...\n", argv[2]);
         createFile(argv[2]);
         break;
-        
+
         case 'd':
-        printf("Creating director...y\n");
+        printf("Creating directory...\n");
         createDirPath(argv[2]);
         break;
-        
+
         case 'h':
         printf("Creating hardLink...\n");
         createHardLink(argv[2], argv[3]);
         break;
-        
+
         case 's':
         printf("Creating soft link...\n");
-        createSymoblicLink(argv[2], argv[3]);
+        createSymbolicLink(argv[2], argv[3]);
         break;
-        
+
         default:
         fprintf(stderr, "Identifier not recognized\n");
         exit(1);
@@ -62,14 +68,14 @@ void createFile(char* filePath)
 	FILE* file;
 	mode_t mode = 0640;
 	file = fopen(filePath, "w");
- 
+
 	if(file == NULL)
 	{
 		fprintf(stderr,"File cannot open\n");
 		exit(1);
 	}
 	chmod(filePath, mode);
-	printf("File %s opened.\n ", filePath); 
+	printf("File %s opened.\n", filePath);
 }
 
 //Creates a directory with permissions of 0750
@@ -103,7 +109,7 @@ void createHardLink(char* oldname, char* linkName)
 }
 
 //Creates a soft link to a file
-void createSymoblicLink(char* oldname, char* linkName)
+void createSymbolicLink(char* oldname, char* linkName)
 {
     struct stat statbuf;
     if(stat(oldname, &statbuf) == -1)
@@ -111,11 +117,11 @@ void createSymoblicLink(char* oldname, char* linkName)
         fprintf(stderr,"%s does not exist!\n", oldname);
         exit(1);
     }
-    
+
     if(symlink(oldname, linkName) == -1)
     {
         fprintf(stderr, "Could not make a symbolic link.\n");
         exit(1);
     }
-    printf("Successfully created symbolic link from %s to %s.\n", linkName, oldname); 
+    printf("Successfully created symbolic link from %s to %s.\n", linkName, oldname);
 }
